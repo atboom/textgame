@@ -21,7 +21,9 @@
 	(attic (candle blanket))
 	))
 
-(defparameter *cmd-list* '(look pickup walk))
+(defparameter *inventory* '())
+
+(defparameter *cmd-list* '(look walk pickup drop))
 
 (defun loc-desc (loc nodes)
 	(cadr (assoc loc nodes))
@@ -50,4 +52,23 @@
 		(objects-desc *location* *items*)))
 )
 
-(look)
+(defun move (loc)
+	(if (find loc (mapcar #'car (cdr (assoc *location* *edges*))))
+		(progn (setf *location* loc)
+			(look))
+		'(you cannot go that way.))
+)
+
+(defun pickup (object)
+	(if (find object (cadr (assoc *location* *items*)))
+		(progn (push object *inventory*)
+			(setf (cadr (car *items*)) (remove object (cadr (car *items*))))
+			(print `(you are now carrying the ,object)))
+		(print '(cound not find that object.)))
+)
+
+;(look)
+
+
+
+
